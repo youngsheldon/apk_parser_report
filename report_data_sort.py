@@ -3,7 +3,7 @@
 # @Author: anchen
 # @Date:   2016-11-11 16:42:53
 # @Last Modified by:   anchen
-# @Last Modified time: 2016-11-15 16:17:06
+# @Last Modified time: 2016-11-16 12:01:29
 import os 
 from xml_parser import XmlParser
 from file_hash import *
@@ -40,7 +40,13 @@ def single_type_data_out(path,data_type,in_data,md5):
     out += md5 + '|' + str(data_type) + '|' + str(in_data) + '\n'
     write_to_file(path,out)
 
-@log_run('parser xml')
+def utf_to_gbk(path):
+    with open(path,'r') as f:
+        content = f.read()
+    with open(path,'w') as f:
+        src = content.decode("utf8").encode("gbk") 
+        f.write(src)
+
 def run_xml_parser(apk_source_path,md5):
     xml_path = apk_source_path + 'AndroidManifest.xml'
     ret = os.path.exists(xml_path)
@@ -65,7 +71,6 @@ def run_xml_parser(apk_source_path,md5):
     else:
         return False 
 
-@log_run('parser base information')
 def run_baseinfo_parser(apk_path,apk_source_path,md5_v):
     path = md5_v + '/'
     md5 = check_hash(apk_path,'md5')
@@ -96,3 +101,4 @@ def run_code_parser(apk_source_path,apk_md5):
     obj = Analyze(apk_source_path,apk_md5,temp_out_file)
     obj.enablePrint()
     obj.do_run()
+    utf_to_gbk(temp_out_file)

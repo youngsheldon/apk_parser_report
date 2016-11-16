@@ -3,13 +3,14 @@
 # @Author: anchen
 # @Date:   2016-11-14 09:06:43
 # @Last Modified by:   anchen
-# @Last Modified time: 2016-11-15 16:25:21
+# @Last Modified time: 2016-11-16 10:50:18
 import os
 import sys 
 import functools
 from file_hash import *
 from report_data_sort import * 
 from virus_tell import VirusTell 
+from Mylog import Mylog
 
 apk_path = sys.argv[1]
 source_path = sys.argv[2]
@@ -17,15 +18,14 @@ source_path = sys.argv[2]
 file_size = get_file_size(apk_path)
 apk_name = get_filename(apk_path)
 apk_sha1 = check_hash(apk_path,'sha1')
+mylog = Mylog('data/log.txt').getObject()
 
 # @log_time(apk_sha1,17)
-@log_run('begin to decode apk')
 def decode_apk():
     arg = source_path + ' ' + apk_path
     os.system('JAVA_OPTS=\"-Xmx4G\" jadx -j 1 -d ' + arg)
 
 # @log_time(apk_sha1,18)
-@log_run('begin to parser code')
 def code_parser():
     ret = os.path.exists(source_path)
     if ret:
@@ -42,7 +42,6 @@ def check_sha1(sha1):
         else:
             return False 
 
-@log_run('save apk sha1')
 def save_apk_sha1(sha1):
     out = sha1 + '\n'
     with open('data/sha1.txt','a+') as f:
@@ -53,7 +52,6 @@ def upload_data(table,data):
     out = 'bcp SMMC7DB..' + table + ' in ' + data + ' -Usa -P -SSMMC5000 -c -t\'|\' -r\'\\n\'  -Y'
     os.system(out)
 
-@log_run('upload data to database')
 def upload_all_data():
     path = apk_sha1 + '/'
     upload_data('ywc_apk_recv_serv','data/' + path + 'recv_serv.txt')
@@ -94,19 +92,29 @@ def apk_analyze_run():
         else:
             save_apk_sha1(apk_sha1)
             mkdir_for_data_file(apk_sha1)
+            mylog.info('[' + apk_sha1 + ':begin to decode apk]')
             decode_apk()
-            ret = run_xml_parser(source_path,apk_sha1)
-            if ret:
-                run_baseinfo_parser(apk_path,source_path,apk_sha1)
-                ret2 = code_parser()
-                if ret2:
-                    run_virus_tell()
-                    return True 
+            try:
+                mylog.info('[' + apk_sha1 + ':begin to parser xml]')
+                ret = run_xml_parser(source_path,apk_sha1)
+                if ret:
+                    run_baseinfo_parser(apk_path,source_path,apk_sha1)
+                    mylog.info('[' + apk_sha1 + ':begin to parser code]')
+                    ret2 = code_parser()
+                    if ret2:
+                        mylog.info('[' + apk_sha1 + ':begin to tell apk]')
+                        run_virus_tell()
+                        return True 
+                    else:
+                        return False 
                 else:
                     return False 
-            else:
-                return False 
+            except Exception, e:
+                mylog.exception(apk_sha1)
+                os._exit(0)
 
 ret = apk_analyze_run()
 if ret:
+    mylog.info('[' + apk_sha1 + ':begin to upload data to database]')
     upload_all_data()
+    mylog.info('[' +apk_sha1 + '----------finish---------]')
