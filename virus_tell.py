@@ -3,7 +3,7 @@
 # @Author: anchen
 # @Date:   2016-11-12 20:28:34
 # @Last Modified by:   anchen
-# @Last Modified time: 2016-11-15 17:39:36
+# @Last Modified time: 2016-11-16 16:46:27
 import re 
 import os 
 from file_hash import * 
@@ -35,7 +35,7 @@ class VirusTell(object):
             for line in f:
                 v = line.strip().split('|')[2]
                 index = line.strip().split('|')[1]
-                if index == '1':
+                if index == '19':
                     action.append(v)
                 else:
                     permis.append(v)
@@ -51,7 +51,7 @@ class VirusTell(object):
                 index = line.strip().split('|')[1]
                 reques_permis = line.strip().split('|')[3]
                 detect_action = line.strip().split('|')[4]
-                if index == '3':
+                if index == '12':
                     if reques_permis != '0':
                         recv_permis.append(reques_permis)
                     if detect_action != '0':
@@ -72,7 +72,7 @@ class VirusTell(object):
                 v = line.strip().split('|')[1]
                 if index == '1':
                     first_code_valuate.append(v)
-                else:
+                elif index == '2':
                     second_code_valuate.append(v)
             return first_code_valuate,second_code_valuate
 
@@ -150,7 +150,6 @@ class VirusTell(object):
             score = 10*content_couter/9.0
         return score 
 
-    @log_run('tell virus')
     def virus_tell(self):
         v1,v2 = self.tell_code_block()#40
         v3 = self.tell_permis()#10

@@ -3,7 +3,7 @@
 # @Author: anchen
 # @Date:   2016-11-10 09:20:32
 # @Last Modified by:   anchen
-# @Last Modified time: 2016-11-15 15:07:27
+# @Last Modified time: 2016-11-16 14:54:36
 import hashlib
 import os,sys
 import functools
@@ -49,17 +49,6 @@ def log_time(md5,index):
                 out = md5 + '|' + str(index) + '|' + str(t2-t1) + '\n'
                 f.write(out)
             return ret 
-        return wrapper
-    return decorator
-
-def log_run(information):
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kw):
-            mylog = Mylog('data/log.txt')
-            obj = mylog.getObject()
-            obj.info(information)
-            return func(*args,**kw)
         return wrapper
     return decorator
 

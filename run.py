@@ -3,7 +3,7 @@
 # @Author: anchen
 # @Date:   2016-11-14 09:06:43
 # @Last Modified by:   anchen
-# @Last Modified time: 2016-11-16 10:50:18
+# @Last Modified time: 2016-11-16 14:36:59
 import os
 import sys 
 import functools
@@ -19,6 +19,8 @@ file_size = get_file_size(apk_path)
 apk_name = get_filename(apk_path)
 apk_sha1 = check_hash(apk_path,'sha1')
 mylog = Mylog('data/log.txt').getObject()
+
+source_path = source_path + apk_name + '/'
 
 # @log_time(apk_sha1,17)
 def decode_apk():
@@ -46,7 +48,6 @@ def save_apk_sha1(sha1):
     out = sha1 + '\n'
     with open('data/sha1.txt','a+') as f:
         f.write(out)
-
 
 def upload_data(table,data):
     out = 'bcp SMMC7DB..' + table + ' in ' + data + ' -Usa -P -SSMMC5000 -c -t\'|\' -r\'\\n\'  -Y'
@@ -79,6 +80,10 @@ def run_virus_tell():
 def mkdir_for_data_file(sha1):
     out = 'data/' + sha1
     os.makedirs(out)
+
+def remove_apk_code_source():
+    out = 'rm ' + source_path + ' -rf'
+    os.system(out)
 
 @log_time(apk_sha1,9)
 def apk_analyze_run():
@@ -117,4 +122,5 @@ ret = apk_analyze_run()
 if ret:
     mylog.info('[' + apk_sha1 + ':begin to upload data to database]')
     upload_all_data()
+    remove_apk_code_source()
     mylog.info('[' +apk_sha1 + '----------finish---------]')

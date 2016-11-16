@@ -3,7 +3,7 @@
 # @Author: anchen
 # @Date:   2016-11-11 16:42:53
 # @Last Modified by:   anchen
-# @Last Modified time: 2016-11-16 12:01:29
+# @Last Modified time: 2016-11-16 16:41:12
 import os 
 from xml_parser import XmlParser
 from file_hash import *
@@ -56,13 +56,13 @@ def run_xml_parser(apk_source_path,md5):
         obj = XmlParser(xml_path)
         action_list = obj.praserPermissionOrAction('action')
         permis_list = obj.praserPermissionOrAction('uses-permission')
-        list_type_data_out('data/' + path + 'permis_act.txt',1,action_list,md5)
-        list_type_data_out('data/' + path + 'permis_act.txt',2,permis_list,md5)
+        list_type_data_out('data/' + path + 'permis_act.txt',19,action_list,md5)
+        list_type_data_out('data/' + path + 'permis_act.txt',18,permis_list,md5)
         #解析监听器和服务
         receiver_out_dict = obj.parserReceiver()
         service_out_dict = obj.parserService()
-        dict_type_data_out('data/' + path + 'recv_serv.txt',1,receiver_out_dict,md5)
-        dict_type_data_out('data/' + path + 'recv_serv.txt',2,service_out_dict,md5)
+        dict_type_data_out('data/' + path + 'recv_serv.txt',12,receiver_out_dict,md5)
+        dict_type_data_out('data/' + path + 'recv_serv.txt',13,service_out_dict,md5)
         #解析sdk版本
         minsdk_v,tarsdk_v = obj.parserSdkVersion()
         single_type_data_out('data/' + path + 'basic_info.txt',10,minsdk_v,md5)
@@ -91,10 +91,10 @@ def run_baseinfo_parser(apk_path,apk_source_path,md5_v):
     single_type_data_out('data/' + path + 'basic_info.txt',5,sha256,md5_v)
     single_type_data_out('data/' + path + 'basic_info.txt',6,sha512,md5_v)
 
-    list_type_data_out('data/' + path + 'res.txt',4,picture_list,md5_v)
-    list_type_data_out('data/' + path + 'res.txt',3,data_list,md5_v)
-    list_type_data_out('data/' + path + 'res.txt',1,inf_list,md5_v)
-    list_type_data_out('data/' + path + 'res.txt',2,bin_list,md5_v)
+    list_type_data_out('data/' + path + 'res.txt',17,picture_list,md5_v)
+    list_type_data_out('data/' + path + 'res.txt',16,data_list,md5_v)
+    list_type_data_out('data/' + path + 'res.txt',14,inf_list,md5_v)
+    list_type_data_out('data/' + path + 'res.txt',15,bin_list,md5_v)
 
 def run_code_parser(apk_source_path,apk_md5):
     temp_out_file = 'data/' + apk_md5 + '/' + 'codeblock.txt'
