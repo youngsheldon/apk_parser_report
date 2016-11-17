@@ -3,13 +3,14 @@
 # @Author: anchen
 # @Date:   2016-11-14 09:06:43
 # @Last Modified by:   anchen
-# @Last Modified time: 2016-11-16 14:36:59
+# @Last Modified time: 2016-11-17 15:54:40
 import os
 import sys 
 import functools
 from file_hash import *
 from report_data_sort import * 
 from virus_tell import VirusTell 
+from tell_virus_apk import VirusApkAnalyze
 from Mylog import Mylog
 
 apk_path = sys.argv[1]
@@ -61,10 +62,14 @@ def upload_all_data():
     upload_data('ywc_apk_act_permis','data/' + path +'permis_act.txt')
     upload_data('ywc_apk_res','data/' + path +'res.txt')
 
-def run_virus_tell():
+def run_virus_tell(option):
     tell_result = 0 
-    obj = VirusTell(apk_sha1)
-    v = obj.virus_tell()
+    if option == 1:
+        obj = VirusTell(apk_sha1)
+        v = obj.virus_tell()
+    else:
+        obj = VirusApkAnalyze(apk_sha1)
+        v = obj.virus_tell()
     if v >= 0 and v <= 50:
         tell_result = 0
     elif v > 50 and v <= 70:
@@ -108,7 +113,7 @@ def apk_analyze_run():
                     ret2 = code_parser()
                     if ret2:
                         mylog.info('[' + apk_sha1 + ':begin to tell apk]')
-                        run_virus_tell()
+                        run_virus_tell(2)
                         return True 
                     else:
                         return False 
